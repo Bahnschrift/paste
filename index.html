@@ -3,8 +3,24 @@
 <head>
 <meta charset="utf-8"/>
 <title>paste</title>
+<script type="module">
+(async ({chrome, netscape}) => {
+
+// add Safari polyfill if needed
+if (!chrome && !netscape)
+  await import('https://unpkg.com/@ungap/custom-elements');
+
+const {default: HighlightedCode} =
+  await import('https://unpkg.com/highlighted-code');
+
+// bootstrap a theme through one of these names
+// https://github.com/highlightjs/highlight.js/tree/main/src/styles
+HighlightedCode.useTheme('github-dark');
+console.log(HighlightedCode);
+})(self);
+</script>
 <style>
-* {
+body {
   box-sizing: border-box;
   font-family: monospace;
   font-size: 1.1em;
@@ -18,6 +34,7 @@
   resize: none;
   color: #eeeeee;
   background: #000000;
+  font-size: 1.1em;
 }
 body.invert #plaintext {
   color: #000000;
@@ -107,7 +124,9 @@ document.addEventListener('DOMContentLoaded', function(){
           return;
         }
 
-        document.getElementById("plaintext").value = plaintext;
+        var view = document.getElementById("plaintext");
+        view.value = plaintext;
+        // hljs.highlightElement(view);
       });
     };
     reader.readAsArrayBuffer(blob);
@@ -163,7 +182,7 @@ function invert() {
 </script>
 </head>
 <body>
-<div id="plaintext-wrapper"><textarea id="plaintext" spellcheck="false"></textarea></div>
-<div id="nav"><span class="nav-default"><a class="nav-left" href="https://github.com/topaz/paste">[github]</a><a class="nav-left" onclick="invert()">[invert colors]</a><a onclick="url_generate('raw')">[generate url]</a><a onclick="url_generate('markdown')">[generate markdown link]</a></span><span class="nav-text-offer"><input id="text-offer-value"/><a onclick="text_offer_copy()">[copy]</a><a onclick="text_offer_cancel()">[cancel]</a></span></div>
+<div id="plaintext-wrapper"><textarea id="plaintext" spellcheck="false" is="highlighted-code"></textarea></div>
+<div id="nav"><span class="nav-default"><a class="nav-left" href="https://github.com/Bahnschrift/paste">[github]</a><a class="nav-left" onclick="invert()">[invert colors]</a><a onclick="url_generate('raw')">[generate url]</a><a onclick="url_generate('markdown')">[generate markdown link]</a></span><span class="nav-text-offer"><input id="text-offer-value"/><a onclick="text_offer_copy()">[copy]</a><a onclick="text_offer_cancel()">[cancel]</a></span></div>
 </body>
 </html>
